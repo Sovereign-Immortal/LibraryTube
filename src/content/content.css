@@ -1,0 +1,37 @@
+/* Injected at document_start to hide player and prevent flashes */
+html[data-librotube-active="true"] ytd-watch-flexy #player-container,
+html[data-librotube-active="true"] ytd-watch-flexy #player-container-outer,
+html[data-librotube-active="true"] #ytd-player,
+html[data-librotube-active="true"] video.html5-main-video {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Classes to toggle lock state dynamically */
+html[data-librotube-locked="true"] ytd-watch-flexy #player-container,
+html[data-librotube-locked="true"] ytd-watch-flexy #player-container-outer,
+html[data-librotube-locked="true"] #ytd-player,
+html[data-librotube-locked="true"] video.html5-main-video {
+  opacity: 0.03 !important; /* Keep it almost invisible to eliminate distraction */
+  pointer-events: none !important;
+}
+
+html[data-librotube-locked="false"] ytd-watch-flexy #player-container,
+html[data-librotube-locked="false"] ytd-watch-flexy #player-container-outer,
+html[data-librotube-locked="false"] #ytd-player,
+html[data-librotube-locked="false"] video.html5-main-video {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Injected container styles */
+#librotube-root-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647; /* Maximum possible z-index to overlay everything */
+  pointer-events: none;
+}

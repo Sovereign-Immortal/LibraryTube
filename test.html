@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibroTube Extension Mock Test</title>
+  
+  <!-- Load the built content script CSS -->
+  <link rel="stylesheet" href="./dist/assets/content.css">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+    
+    .youtube-mock-page {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .video-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: #000;
+      aspect-ratio: 16/9;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #333;
+      position: relative;
+    }
+    
+    /* Simulate YouTube selectors */
+    #player-container, #ytd-player, .html5-main-video {
+      width: 100%;
+      height: 100%;
+    }
+    
+    video.html5-main-video {
+      background: #000;
+      display: block;
+    }
+    
+    .comments-mock {
+      border-top: 1px solid #333;
+      padding-top: 1rem;
+      color: #aaa;
+    }
+  </style>
+
+  <!-- Mock Chrome Extension API before content script loads -->
+  <script>
+    window.chrome = {
+      runtime: {
+        sendMessage: (message, callback) => {
+          console.log("[Mock Extension] Background received message:", message);
+          if (message.action === 'getVideoContent') {
+            // Simulate background response
+            setTimeout(() => {
+              callback({
+                success: true,
+                content: {
+                  videoId: message.videoId,
+                  summary: "This mock video explains how to build a highly performant browser extension using React and Vite. It covers DOM interception, styling encapsulation using Shadow DOM, and API caching in local IndexedDB.",
+                  strengths: [
+                    { point: "Excellent styling containment using Shadow DOM", quote: "wrap the entire reader modal in a Shadow DOM", timestamp: 45 },
+                    { point: "No-flash video loading system", quote: "sets opacity to 0 until lock is applied", timestamp: 120 },
+                    { point: "Efficient data caching with IndexedDB", quote: "cache transcripts and summaries per video ID", timestamp: 310 }
+                  ],
+                  weaknesses: [
+                    { point: "Requires custom API keys for cloud providers", quote: "user-provided API keys in the settings page", timestamp: 240 },
+                    { point: "Depends heavily on YouTube HTML structures", quote: "uses mutation observers to know when player response is ready", timestamp: 450 }
+                  ],
+                  critique: "### Sarcastic Analysis of the Project Setup\n\nThe project claims to turn YouTube into a library, which is a noble goal. However, the execution depends heavily on YouTube's DOM stability. YouTube changes class names frequently, meaning this extension is one layout shift away from breaking completely. It's a game of cat and mouse.\n\nThat being said, the implementation of Shadow DOM is a solid architectural decision, shielding the reader modal from YouTube's complex global styles.",
+                  formattedTranscript: "<p>Welcome back! Today we are discussing the architecture of LibroTube.</p><p>We will intercept the YouTube player and lock it to prevent distraction.</p><p>Then we will load the parsed captions in a PDF-style modal.</p>",
+                  createdAt: Date.now()
+                }
+              });
+            }, 1000);
+          } else if (message.action === 'preFetchVideo') {
+            callback({ success: true });
+          }
+        },
+        onMessage: {
+          addListener: (listener) => {
+            console.log("[Mock Extension] onMessage listener registered.");
+          }
+        }
+      },
+      storage: {
+        local: {
+          get: (keys, callback) => {
+            callback({
+              settings: {
+                provider: 'mock',
+                apiKey: '',
+                theme: 'dark'
+              }
+            });
+          },
+          set: (data, callback) => {
+            callback && callback();
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body>
+
+  <div class="youtube-mock-page">
+    <h2>YouTube Mock Watch Page (LibroTube Testing Environment)</h2>
+    <p>Simulating video watch page at: <code>test.html?v=dQw4w9WgXcQ</code></p>
+    
+    <div id="player-container">
+      <div id="ytd-player">
+        <!-- Mock YouTube video element -->
+        <video class="html5-main-video" controls autoplay src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+    
+    <div class="comments-mock">
+      <h3>Mock Comments</h3>
+      <p><strong>User1:</strong> This is an amazing mock page!</p>
+      <p><strong>User2:</strong> Wow, the video player opacity is 0! The extension is locking it.</p>
+    </div>
+  </div>
+
+  <!-- Load the compiled content script -->
+  <script src="./dist/content.js"></script>
+</body>
+</html>
